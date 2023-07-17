@@ -1,0 +1,13 @@
+# pycharm,该文件用于上传代码到git上时忽略自己的重要文件
+.idea/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff
+local_settings.py
+
+# database migrations
+*/migrations/*.py
+!*/migrations/__init__.py
