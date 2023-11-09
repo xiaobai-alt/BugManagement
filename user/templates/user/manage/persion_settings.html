@@ -1,0 +1,115 @@
+{% extends 'user/layout/manage_base.html' %}
+{% block css %}
+    <style>
+        .choose{
+            border-left: 2px solid #f90 !important;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container clearfix" style="">
+        <div class="col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="background-color: transparent;font-weight: bold;">
+                    个人中心
+                </div>
+                <div class="list-group">
+                    <div>
+                        <a href="{% url 'user:persion_settings' %}"  class="list-group-item choose">我的资料</a>
+                        <a href="#"  class="list-group-item">修改密码</a>
+                        <a href="{% url 'user:project_delete' %}" class="list-group-item">删除项目</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-heading"><i class="fa fa-address-card-o" aria-hidden="true"></i>个人信息</div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>用户名</th>
+                                <th>用户邮箱</th>
+                                <th>用户手机号</th>
+                                <th>替换头像</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in userinfo %}
+                                <tr>
+                                    <td>{{ item.user_name }}</td>
+                                    <td>{{ item.email }}</td>
+                                    <td>{{ item.phone }}</td>
+                                    <td>待开发</td>
+{#                                    <td>#}
+{#                                        <a class="btn btn-danger btn-xs"#}
+{#                                            data-toggle="modal"#}
+{#                                            data-target="#alertModal"#}
+{#                                            data-fid="{{ project.id }}"#}
+{#                                    >#}
+{#                                            <i class="fas fa-trash"></i>#}
+{#                                        </a>#}
+{#                                    </td>#}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+{#    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">#}
+{#        <div class="modal-dialog" role="document">#}
+{#            <div class="alert alert-danger alert-dismissible fade in" role="alert">#}
+{#                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
+{#                        aria-hidden="true">×</span></button>#}
+{#                <h4>是否确认删除?</h4>#}
+{#                <p style="padding-top: 20px;padding-bottom: 20px;">#}
+{#                    警告: 项目中所有的文件与信息都将被删除!!!#}
+{#                </p>#}
+{#                <p>#}
+{#                    <button type="button" data-dismiss="modal" class="btn btn-default">取 消</button>#}
+{#                    <button id="btnDelete" type="button" class="btn btn-danger">确 认</button>#}
+{#                </p>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{% endblock %}
+{#{% block js %}#}
+{#    <script>#}
+{#        var PROJECT_DELETE_URL = "{% url 'user:project_delete'  %}";#}
+{##}
+{#        $(function () {#}
+{#            initAddModal();#}
+{#            bindDeleteSubmit();#}
+{#        })#}
+{##}
+{#        function initAddModal() {#}
+{#            $('#alertModal').on('show.bs.modal', function (event) {#}
+{#                var button = $(event.relatedTarget); // Button that triggered the modal#}
+{#                var fid = button.data('fid');#}
+{#                $('#btnDelete').attr('fid', fid)#}
+{##}
+{#            })#}
+{#        }#}
+{##}
+{#        function bindDeleteSubmit() {#}
+{#            $('#btnDelete').click(function () {#}
+{#                $.ajax({#}
+{#                    url: PROJECT_DELETE_URL,#}
+{#                    type: "POST",#}
+{#                    data: {fid: $(this).attr('fid')},#}
+{#                    success: function (res) {#}
+{#                        if (res.status) {#}
+{#                            location.href = location.href;#}
+{#                        }#}
+{#                    }#}
+{#                })#}
+{#            })#}
+{#        }#}
+{#    </script>#}
+{#{% endblock %}#}

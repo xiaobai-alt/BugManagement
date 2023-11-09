@@ -13,9 +13,9 @@ class UserInfo(models.Model):
 class PricePolicy(models.Model):
     """价格策略，用来区分用户的不同权限，收费标准"""
     category_choice = (
-        (1, '个人免费版'),
-        (2, '一类收费版'),
-        (3, '二类收费版'),
+        (1, '标准用户版'),
+        (2, 'vip版'),
+        (3, 'svip版'),
         (4, '其他'),
     )
     category = models.SmallIntegerField(verbose_name='收费类型', default=1, choices=category_choice)

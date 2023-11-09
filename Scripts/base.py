@@ -8,7 +8,7 @@ import django
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_dir)  # 将目录添加到sys的路径识别中，这样才可以读取django项目的settings
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "BugManagement.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "BugMangement.settings")
 django.setup()  # 完成以上配置后才能对django项目进行离线配置
 
 # 只有完成了上述内容后才可以继续编写需要的功能以及导入对应的包

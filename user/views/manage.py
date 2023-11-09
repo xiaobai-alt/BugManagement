@@ -95,6 +95,21 @@ def settings(request):
     return render(request, 'user/manage/settings.html')
 
 
+def persion_settings(request):
+    if request.method == 'GET':
+        # per_info_list = models.UserInfo.objects.filter(id=request.bug_management.user.id)
+        # content = {
+        #     'per_info_lst': per_info_list,
+        # }
+        userinfo = models.UserInfo.objects.filter(id=request.bug_management.user.id)
+        content = {
+            'userinfo': userinfo,
+        }
+        # for item in userinfo:
+        #     print(item.user_name)
+        return render(request, 'user/manage/persion_settings.html', content)
+
+
 @csrf_exempt
 def delete(request):
     if request.method == 'GET':

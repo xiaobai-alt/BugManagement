@@ -34,7 +34,7 @@ def register(request):
         # 用户表中新增一条用户数据
         instance = form.save()
 
-        project_policy = models.PricePolicy.objects.filter(category=1, title='个人免费版').first()
+        project_policy = models.PricePolicy.objects.filter(category=1, title='标准用户版').first()
         # 创建交易记录
         models.Transaction.objects.create(
             status=2,
