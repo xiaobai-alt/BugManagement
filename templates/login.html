@@ -1,0 +1,166 @@
+{% extends 'layout/basic.html' %}
+
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'user/css/account.css' %}">
+    <style>
+        .error-msg {
+            color: red;
+            position: absolute;
+        }
+    </style>
+{% endblock %}
+{% block title %}主 页{% endblock %}
+
+{% block content %}
+    <div class="account">
+        <div class="title">用户登录</div>
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
+                                                      data-toggle="tab">账号登录</a>
+            </li>
+            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">短信登录</a>
+            </li>
+
+        </ul>
+        <div>
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <form id="LoginPForm" method="post" novalidate>
+                        {% csrf_token %}
+                        {% for field in formP %}
+                            {% if field.name == 'img_code' %}
+                                <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    <div class="clearfix">
+                                        <div class="col-md-6" style="padding-left: 0">
+                                            {{ field }}
+                                            <span class="error-msg">{{ field.errors.0 }}</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <img src="{% url 'user:img_code' %}" id="imgCode" title="点击更换验证码">
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    <span class="error-msg">{{ field.errors.0 }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <input type="submit" class="btn btn-primary" value="登 录"/>
+                    </form>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="profile">
+                    <form id="loginForm" method="post" novalidate>
+                        {% csrf_token %}
+                        {% for field in formS %}
+                            {% if field.name == 'code' %}
+                                <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    <div class="clearfix">
+                                        <div class="col-md-6" style="padding-left: 0">
+                                            {{ field }}
+                                            <span class="error-msg"></span>
+                                        </div>
+                                        <div class="col-md-6"><input id="btnSmsL" type="button" class="btn btn-default"
+                                                                     value="点击获取验证码"></div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                    {{ field }}
+                                    <span class="error-msg"></span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <button id="btnLogin" type="button" class="btn btn-primary">登 录</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(function () {
+            bindClickBtnSmsL();
+            bindClickBtnLogin();
+            $('#imgCode').click(function () {
+                var oldSrc = $(this).attr('src');
+                $(this).attr('src', oldSrc + '?'); // 相当于重新发送一个带？的url，但登录界面不变
+            })
+
+        })
+
+        function bindClickBtnSmsL() {
+            $('#btnSmsL').click(function () {
+                $('.error-msg').empty();
+                var phone = $('#id_phone').val();
+
+                $.ajax({
+                    url: '{% url 'user:send_sms' %}',
+                    type: 'GET',
+                    data: {phone: phone, tpl: 'login'},
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (res.status) {
+                            SendSmsRemind()
+                        } else {
+                            $.each(res.error, function (key, value) {
+                                $('#id_' + key).next().text(value[0]);
+                            })
+                        }
+                    }
+                })
+            })
+        }
+
+        function bindClickBtnLogin() {
+            $('#btnLogin').click(function () {
+                $('.error-msg').empty();
+                $.ajax({
+                    url: '{% url 'user:login' %}',
+                    type: 'POST',
+                    data: $('#loginForm').serialize(),
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (res.status) {
+                            console.log(res);
+                             location.href = res.data;
+                        } else {
+                            $.each(res.error, function (key, value) {
+                                $('#id_' + key).next().text(value[0]);
+                            })
+                        }
+                    }
+                })
+            })
+
+        }
+
+        function SendSmsRemind() {
+            var $smsBtn = $('#btnSmsL');
+            $smsBtn.prop('disabled', true) // 添加disabled属性，使按钮不可点击
+            var time = 60;
+            var remind = setInterval(function () {
+                $smsBtn.val(time + 's后重新发送');
+                time = time - 1;
+                if (time < 1) {
+                    clearInterval(remind);
+                    $smsBtn.val('点击获取验证码').prop('disabled', false)  //解除不可点击状态
+                }
+            }, 1000) //每1000毫秒执行一次函数
+
+        }
+
+    </script>
+    <script src="{% static 'js/backdrop.js' %}"></script>
+{% endblock %}
