@@ -130,15 +130,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # 腾讯sms配置
 # 应用id
-TENCENT_SMS_APP_ID = 666666  # 测试用，正确配置在local_settings中
+
 # 应用key
-TENCENT_SMS_APP_KEY = '555555555'
+
 #  腾讯云短信内容
-TENCENT_SMS_SIGN = 'Bug测试平台'
+
 
 # 腾讯云COS的id与key
-TENCENT_COS_ID = 'COSid'
-TENCENT_COS_KEY = 'COSkey'
+
 
 # ####设置网址白名单
 WHITE_REGEX_URL_LIST = [
