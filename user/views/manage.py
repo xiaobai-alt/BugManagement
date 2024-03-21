@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from user import models
 from utils.tencent.cos import cos
 from django.views.decorators.csrf import csrf_exempt
+from utils.encode import enpasswd
+from django.db.models import Q
 
 
 def management(request):
@@ -108,6 +110,25 @@ def persion_settings(request):
         # for item in userinfo:
         #     print(item.user_name)
         return render(request, 'user/manage/persion_settings.html', content)
+
+@csrf_exempt
+def change_pwd(request):
+    if request.method == 'GET':
+        return render(request, 'user/manage/change_pwd.html')
+    data = request.POST
+    # print(data)
+    user_name = data['username']
+    user_email = data['useremail']
+    user_phone = data['userphone']
+    user_new_pwd = enpasswd.MD5(data['usernewpwd'])
+    user_new_pwd_1 = enpasswd.MD5(data['usernewpwd1'])
+    if user_new_pwd == user_new_pwd_1:
+        models.UserInfo.objects.filter(Q(user_name=user_name) | Q(email=user_email) | Q(phone=user_phone)).update(password=user_new_pwd)
+        return JsonResponse({'status': True, 'data': '/settings/'})
+    else:
+        return JsonResponse({'status': False, 'error': '密码确认有误'})
+
+
 
 
 @csrf_exempt

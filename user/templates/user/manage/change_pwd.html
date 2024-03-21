@@ -1,0 +1,118 @@
+{% extends 'user/layout/manage_base.html' %}
+{% block css %}
+    <style>
+        .choose {
+            border-left: 2px solid #f90 !important;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container clearfix" style="">
+        <div class="col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="background-color: transparent;font-weight: bold;">
+                    个人中心
+                </div>
+                <div class="list-group">
+                    <div>
+                        <a href="{% url 'user:persion_settings' %}" class="list-group-item">我的资料</a>
+                        <a href="{% url 'user:change_pwd' %}" class="list-group-item  choose">修改密码</a>
+                        <a href="{% url 'user:project_delete' %}" class="list-group-item">删除项目</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-heading"><i class="fa fa-address-card-o" aria-hidden="true"></i>修改密码</div>
+                <div class="panel-body">
+                    <table class="table table-striped">
+                        <tbody>
+                            <form class="form-inline" id="changePwd" method="post" novalidate>
+                                <div class="form-group">
+                                    <label for="exampleInputName2">请输入用户名称</label>
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="Jane Doe">
+                                    <span class="error-msg"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail2">请输入你的邮箱</label>
+                                    <input type="email" class="form-control" id="useremail" name="useremail"
+                                           placeholder="jane.doe@example.com">
+                                    <span class="error-msg"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail2">请输入你的手机号</label>
+                                    <input type="email" class="form-control" id="userphone" name="userphone"
+                                           placeholder="13295151779">
+                                    <span class="error-msg"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail2">请输入你的新密码</label>
+                                    <input type="email" class="form-control" id="usernewpwd" name="usernewpwd"
+                                           placeholder="********">
+                                    <span class="error-msg"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail2">请再次确认你的新密码</label>
+                                    <input type="email" class="form-control" id="usernewpwd1" name="usernewpwd1"
+                                           placeholder="*******">
+                                    <span class="error-msg"></span>
+                                </div>
+                                <button id="btnChange" type="submit" class="btn btn-default">确认修改</button>
+                            </form>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {#    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">#}
+    {#        <div class="modal-dialog" role="document">#}
+    {#            <div class="alert alert-danger alert-dismissible fade in" role="alert">#}
+    {#                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span#}
+    {#                        aria-hidden="true">×</span></button>#}
+    {#                <h4>是否确认删除?</h4>#}
+    {#                <p style="padding-top: 20px;padding-bottom: 20px;">#}
+    {#                    警告: 项目中所有的文件与信息都将被删除!!!#}
+    {#                </p>#}
+    {#                <p>#}
+    {#                    <button type="button" data-dismiss="modal" class="btn btn-default">取 消</button>#}
+    {#                    <button id="btnDelete" type="button" class="btn btn-danger">确 认</button>#}
+    {#                </p>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
+{% endblock %}
+{% block js %}
+    <script>
+        var PWD_CHANGE_URL = "{% url 'user:change_pwd'  %}";
+
+        $(function () {
+
+            bindChangePwdSubmit();
+        })
+
+        function bindChangePwdSubmit() {
+            $('#btnChange').click(function () {
+                $('.error-msg').empty(); // 处理错误信息遗留界面
+                //该函数目的在于获取表单中的数据，并通过ajax发送后台
+                $.ajax({
+                    url: '{% url 'user:change_pwd' %}',
+                    type: 'POST',
+                    data: $('#changePwd').serialize(), //此函数会自动获取表单数据为键值对形式，并且携带了csrf token
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (res.status){
+                            location.href = res.data;
+                        } else {
+                            $.each(res.error, function (key, value) {
+                                $('#id_' + key).next().text(value[0]);
+                            })
+                        }
+                    }
+                })
+            })
+        }
+    </script>
+{% endblock %}

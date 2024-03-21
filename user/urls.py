@@ -36,6 +36,7 @@ urlpatterns = [
     path('settings/', manage.settings, name='settings'),
     path('settings/delete/', manage.delete, name='project_delete'),
     path('settings/persion_settings/', manage.persion_settings, name='persion_settings'),
+    path('settings/change_pwd/', manage.change_pwd, name='change_pwd'),
 
     re_path(r'^manage_project/(?P<project_id>\d+)/', include([
         re_path('dashboard/$', manage.dashboard, name='dashboard'),
