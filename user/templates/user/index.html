@@ -20,7 +20,16 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="home">hahahhahaha</div>
+            <div role="tabpanel" class="tab-pane active" id="home">
+                {% for item in ProjectList %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><a href="{% url 'user:blog' project_id=item.id %}">{{ item.name }}</a></div>
+                        <div class="panel-body">
+                            {{ item.defs }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
             <div role="tabpanel" class="tab-pane" id="profile">.jjjjjjjj</div>
             <div role="tabpanel" class="tab-pane" id="messages">...</div>
             <div role="tabpanel" class="tab-pane" id="settings">...</div>

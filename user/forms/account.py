@@ -221,3 +221,11 @@ class SendSMS(forms.Form):
         conn.set(phone, code, ex=60)
 
         return phone
+
+
+class ProjectModelForm(forms.Form):
+    class Meta:
+        model = models.UserInfo
+        fields = '__all__'  # 此处做顺序排版使用，会默认按照models.py中定义的顺序执行，再执行新增的字段
+        # 此外还可以自己定义顺序
+        # fields = ['name', 'defs', 'password', 'img_code']

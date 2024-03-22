@@ -25,6 +25,7 @@ urlpatterns = [
     path('logout/', account.logout, name='logout'),
     path('register/', account.register, name='register'),
     path('index/', home.index, name='index'),
+    re_path(r'^blog/(?P<project_id>\d+)/', home.blog, name='blog'),
 
     path('send/sms', account.send_sms, name='send_sms'),
     path('img_code/', account.img_code, name='img_code'),

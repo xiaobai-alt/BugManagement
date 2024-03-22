@@ -1,0 +1,38 @@
+{% extends 'layout/basic.html' %}
+{% load static %}
+{% block title %}用户主页{% endblock %}
+
+{% block content %}
+    <h1 style="color: #3e8f3e">Welcome</h1>
+    <div>
+
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab"
+                                                      data-toggle="tab">Home</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="home">
+                {% for item in project_info %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{{ item.name }}</div>
+                        <div class="panel-body">
+                            {{ item.defs }}
+                        </div>
+                        <div class="panel-footer">创建时间: {{ item.create_datetime }} 项目创建者: {% for user in creator_info %}
+                            {{ user.user_name }}
+                        {% endfor %}</div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'js/backdrop.js' %}"></script>
+{% endblock %}
+

@@ -124,7 +124,7 @@ def change_pwd(request):
     user_new_pwd_1 = enpasswd.MD5(data['usernewpwd1'])
     if user_new_pwd == user_new_pwd_1:
         models.UserInfo.objects.filter(Q(user_name=user_name) | Q(email=user_email) | Q(phone=user_phone)).update(password=user_new_pwd)
-        return JsonResponse({'status': True, 'data': '/settings/'})
+        return JsonResponse({'status': True, 'info': '密码修改成功，点击确认返回登陆界面，请您重新登录'})
     else:
         return JsonResponse({'status': False, 'error': '密码确认有误'})
 
