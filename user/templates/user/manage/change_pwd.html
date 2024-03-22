@@ -58,7 +58,7 @@
                                            placeholder="*******">
                                     <span class="error-msg"></span>
                                 </div>
-                                <button id="btnChange" type="submit" class="btn btn-default">确认修改</button>
+                                <button id="btnChange" type="button" class="btn btn-default">确认修改</button>
                             </form>
                         </tbody>
                     </table>
@@ -86,10 +86,8 @@
 {% endblock %}
 {% block js %}
     <script>
-        var PWD_CHANGE_URL = "{% url 'user:change_pwd'  %}";
 
         $(function () {
-
             bindChangePwdSubmit();
         })
 
@@ -104,7 +102,11 @@
                     dataType: 'JSON',
                     success: function (res) {
                         if (res.status){
-                            location.href = res.data;
+                            alert(res.info);
+                            setTimeout(function () {
+                                window.location.href = '/logout/';
+                            }, 50);
+
                         } else {
                             $.each(res.error, function (key, value) {
                                 $('#id_' + key).next().text(value[0]);
