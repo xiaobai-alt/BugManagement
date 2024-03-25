@@ -52,8 +52,9 @@
                 </div>
                 <div class="function">
                     <a type="button" class="btn btn-success btn-xs"
-                       href="{% url 'user:wiki_add' project_id=request.bug_management.project.id %}">
-                        <i class="fas fa-plus-circle" style="color: #2d782b;"></i> 取消
+                       href="{% url 'user:wiki' project_id=request.bug_management.project.id %}">
+                        <i class="fas fa-window-close" style="color: #2d782b;"></i> 取消
+{#                        fal fa-window-close  fas fa-plus-circle#}
                     </a>
                 </div>
             </div>
