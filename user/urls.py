@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from .views import account, home, manage, wiki, file
+from .views import account, home, manage, wiki, file, issues
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -41,7 +41,6 @@ urlpatterns = [
 
     re_path(r'^manage_project/(?P<project_id>\d+)/', include([
         re_path('dashboard/$', manage.dashboard, name='dashboard'),
-        re_path('issues/$', manage.issues, name='issues'),
         re_path('statistics/$', manage.statistics, name='statistics'),
 
 
@@ -60,6 +59,8 @@ urlpatterns = [
         re_path(r'wiki/delete/(?P<article_id>\d+)/$', wiki.delete, name='wiki_delete'),
         re_path(r'wiki/edit/(?P<article_id>\d+)/$', wiki.edit, name='wiki_edit'),
         re_path('wiki/catalog/$', wiki.catalog, name='WikiCatalog'),
+
+        re_path('issues/$', issues.issues, name='issues'),
 
     ], None
     ))

@@ -1,5 +1,184 @@
 {% extends 'user/layout/manage_base.html' %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'user/plugin/editor-md/css/editormd.min.css' %}">
+    <style>
+        .issues-list .number {
+            width: 100px;
+            text-align: right;
+        }
+
+        .issues-list .number a {
+            font-weight: 500;
+            padding: 0 10px;
+        }
+
+        .issues-list .issue .tags {
+            padding: 10px 0;
+        }
+
+        .issues-list .issue .tags span {
+            margin-right: 20px;
+            display: inline-block;
+            font-size: 12px;
+        }
+
+        .issues-list .issue .tags .type {
+            color: white;
+            padding: 1px 5px;
+            border-radius: 5px;
+        }
+
+        .pd-0{
+            padding: 0 !important;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <h1>问题</h1>
+    <div class="container-fluid clearfix" style="padding: 20px 0;">
+        <div class="col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-search" aria-hidden="true"></i> 筛选
+                </div>
+                <div class="panel-body">
+                    筛选选项
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fab fa-acquisitions-incorporated" aria-hidden="true"></i> 问题
+                </div>
+                <div class="panel-body">
+                    <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#addModal">新建问题</a>
+                    <a class="btn btn-primary btn-sm">邀请成员</a>
+                </div>
+                <table class="table">
+                    <tbody class="issues-list">
+
+                    </tbody>
+                </table>
+            </div>
+            <nav aria-label="...">
+                <ul class="pagination" style="margin-top: 0;">
+                    <li class="disabled"><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a></li>
+                    <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">2</a></li>
+                    <li><a href="#">3</a></li>
+                    <li><a href="#">4</a></li>
+                    <li><a href="#">5</a></li>
+                    <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">新建问题</h4>
+                </div>
+                <div class="modal-body" style="padding-right: 40px;">
+                    <form id="addForm" class="form-horizontal">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="{{ form.issues_type.id_for_label }}"
+                                   class="col-sm-2 control-label">{{ form.issues_type.label }}</label>
+                            <div class="col-sm-10">
+                                {{ form.issues_type}}
+                                <span class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.subject.id_for_label }}"
+                                   class="col-sm-2 control-label">{{ form.subject.label }}</label>
+                            <div class="col-sm-10">
+                                {{ form.subject}}
+                                <span class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.module.id_for_label }}"
+                                   class="col-sm-2 control-label">{{ form.module.label }}</label>
+                            <div class="col-sm-10">
+                                {{ form.module}}
+                                <span class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.desc.id_for_label }}"
+                                   class="col-sm-2 control-label">{{ form.desc.label }}</label>
+                            <div class="col-sm-10">
+                                <div>
+                                    <div id="editor">
+                                        {{ form.desc}}
+                                    </div>
+                                </div>
+
+                                <span class="error-msg"></span>
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <div class="col-md-6 pd-0">
+                                <label for="inputPassword3" class="col-md-4 control-label">状态</label>
+                                <div class="col-md-8 clearfix">
+                                    {{ form.status }}
+                                    <div class="error-msg"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 pd-0">
+                                <label for="inputPassword3" class="col-md-4 control-label">优先级</label>
+                                <div class="col-md-8 clearfix">
+                                    {{ form.priority }}
+                                    <div class="error-msg"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                    <button type="button" class="btn btn-primary">添 加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'user/plugin/editor-md/editormd.min.js' %}"></script>
+    <script>
+
+        var WIKI_UPLOAD_URL = "{% url 'user:wiki_img_upload' project_id=request.bug_management.project.id %}";
+        $(function () {
+            bindBootStrapShownEvent();
+        });
+
+        function bindBootStrapShownEvent() {
+            $('#addModal').on('shown.bs.modal', function (event) {
+                // 对话框弹出时，内容触发
+                initEditorMd();
+            })
+        }
+
+         //初始化markdown编辑器,将textare转换为markdown
+        function initEditorMd() {
+            editormd('editor', {
+                placeholder:'请输入内容',
+                height: 300,
+                path: "{% static  'user/plugin/editor-md/lib/' %}",
+                imageUpload:true,
+                imageFormats:['jpg', 'jpeg', 'png', 'gif'],
+                imageUploadURL:WIKI_UPLOAD_URL,
+            })
+        }
+
+    </script>
 {% endblock %}

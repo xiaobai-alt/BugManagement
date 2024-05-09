@@ -81,10 +81,6 @@ def dashboard(request, project_id):
     return render(request, 'user/manage/dashboard.html')
 
 
-def issues(request, project_id):
-    return render(request, 'user/manage/issues.html')
-
-
 def statistics(request, project_id):
     return render(request, 'user/manage/statistics.html')
 
@@ -111,6 +107,7 @@ def persion_settings(request):
         #     print(item.user_name)
         return render(request, 'user/manage/persion_settings.html', content)
 
+
 @csrf_exempt
 def change_pwd(request):
     if request.method == 'GET':
@@ -123,12 +120,11 @@ def change_pwd(request):
     user_new_pwd = enpasswd.MD5(data['usernewpwd'])
     user_new_pwd_1 = enpasswd.MD5(data['usernewpwd1'])
     if user_new_pwd == user_new_pwd_1:
-        models.UserInfo.objects.filter(Q(user_name=user_name) | Q(email=user_email) | Q(phone=user_phone)).update(password=user_new_pwd)
+        models.UserInfo.objects.filter(Q(user_name=user_name) | Q(email=user_email) | Q(phone=user_phone)).update(
+            password=user_new_pwd)
         return JsonResponse({'status': True, 'info': '密码修改成功，点击确认返回登陆界面，请您重新登录'})
     else:
         return JsonResponse({'status': False, 'error': '密码确认有误'})
-
-
 
 
 @csrf_exempt
@@ -158,4 +154,3 @@ def delete(request):
     cos.delete_bucket(bucket, region)
     models.Project.objects.filter(id=project_id).delete()
     return redirect('project_delete')
-
