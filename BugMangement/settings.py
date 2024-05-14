@@ -68,9 +68,10 @@ TEMPLATES = [
                 # 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            # 'libraries': {  # Adding this section should work around the issue.
-            #     'project_menu': 'user.templatetags.project_menu',
-            # },
+            'libraries': {  # Adding this section should work around the issue.
+                'project_menu': 'user.templatetags.project_menu',
+                'issues': 'user.templatetags.issues'
+            },
         },
     },
 ]

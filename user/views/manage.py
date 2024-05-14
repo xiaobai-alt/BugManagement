@@ -42,12 +42,18 @@ def management(request):
         bucket = "{}-{}-1319494266".format(request.bug_management.user.phone, str(int(time.time())))
         region = 'ap-nanjing'
         cos.create_bucket(bucket, region)
-
+        # 2.创建项目
         # 验证通过就可以保存，即创建项目,由于页面表单只需要用户填写名称，颜色，描述，因此还需要我们在后再做一次操作
         forms.instance.bucket = bucket
         forms.instance.region = region
         forms.instance.creator = request.bug_management.user
-        forms.save()
+        instance = forms.save()
+
+        # 3.项目初始化问题
+        issues_type_object_list = []
+        for item in models.IssuesType.PROJECT_INIT_LIST: # [任务， 功能， Bug]
+            issues_type_object_list.append(models.IssuesType(project=instance, title=item))
+        models.IssuesType.objects.bulk_create(issues_type_object_list)
         return JsonResponse({'status': True})
     else:
         return JsonResponse({'status': False, 'error': forms.errors})
@@ -129,6 +135,9 @@ def change_pwd(request):
 
 @csrf_exempt
 def delete(request):
+    global creator
+    global bucket
+    global region
     if request.method == 'GET':
         project_object_list = models.Project.objects.filter(creator=request.bug_management.user).order_by('-id')
         content = {
@@ -141,10 +150,12 @@ def delete(request):
 
     project_object = models.Project.objects.filter(id=project_id).all()
     for item in project_object:
+
         creator = item.creator
         bucket = item.bucket
         region = item.region
         break
+
     if request.bug_management.user != creator:
         return render(request, 'user/manage/project_delete.html', {'error': '您不是项目创建者，无权删除'})
     # 删除桶

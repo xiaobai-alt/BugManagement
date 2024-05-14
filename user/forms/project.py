@@ -2,20 +2,21 @@ from django import forms
 from user import models
 from django.core.exceptions import ValidationError
 from user.forms.widgets import ColorRadioSelect
+from .bootstrap import BootStrapForm
 
-class BootStrapForm(object):
-    # 对于相同的属性添加操作，可以通过重定义属性的方法集体实现
-    # 将具有相同设置的方法集装成类，继承该类
-    # 为了规划出不希望继承统一样式的属性，定义一个空列表来写入此类属性名，后续集成时可以在对应的类中自己定义并添加该类属性名
-    bootstrap_class_exclude = []
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            if name in self.bootstrap_class_exclude:
-                continue
-            field.widget.attrs['class'] = 'form-control'
-            field.widget.attrs['placeholder'] = '请输入%s' % (field.label,)
+# class BootStrapForm(object):
+#     # 对于相同的属性添加操作，可以通过重定义属性的方法集体实现
+#     # 将具有相同设置的方法集装成类，继承该类
+#     # 为了规划出不希望继承统一样式的属性，定义一个空列表来写入此类属性名，后续集成时可以在对应的类中自己定义并添加该类属性名
+#     bootstrap_class_exclude = []
+#
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         for name, field in self.fields.items():
+#             if name in self.bootstrap_class_exclude:
+#                 continue
+#             field.widget.attrs['class'] = 'form-control'
+#             field.widget.attrs['placeholder'] = '请输入%s' % (field.label,)
 
 
 class ProjectModels(BootStrapForm, forms.ModelForm):

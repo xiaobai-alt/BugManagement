@@ -61,6 +61,7 @@ urlpatterns = [
         re_path('wiki/catalog/$', wiki.catalog, name='WikiCatalog'),
 
         re_path('issues/$', issues.issues, name='issues'),
+        re_path(r'issues/detail/(?P<issues_id>\d+)/$', issues.issues_detail, name='issues_detail'),
 
     ], None
     ))

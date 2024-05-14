@@ -9,6 +9,9 @@ class UserInfo(models.Model):
     phone = models.CharField(verbose_name='手机号', max_length=11)
     password = models.CharField(verbose_name='密码', max_length=32)
 
+    def __str__(self):
+        return  self.user_name
+
 
 class PricePolicy(models.Model):
     """价格策略，用来区分用户的不同权限，收费标准"""
@@ -183,6 +186,7 @@ class Module(models.Model):
 
 class IssuesType(models.Model):
     """ 问题类型 例如：任务、功能、Bug """
+    PROJECT_INIT_LIST = ['任务', '功能', 'Bug']
     title = models.CharField(verbose_name='类型名称', max_length=32)
     project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
 
