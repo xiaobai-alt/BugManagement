@@ -65,7 +65,7 @@
                 </div>
                 <table class="table">
                     <tbody class="issues-list">
-                    {% for item in issues_object_list %}
+                        {% for item in issues_object_list %}
                         <tr>
                             <td class="number">
                                 <i class="fa fa-circle text-{{ item.priority }}"></i>
@@ -73,7 +73,7 @@
                             </td>
                             <td class="issue">
                                 <div>
-                                    <a target="_blank" href="#">{{ item.subject }}</a>
+                                    <a target="_blank" href="{% url 'user:issues_detail' project_id=request.bug_management.project.id issues_id=item.id %}">{{ item.subject }}</a>
                                 </div>
                                 <div class="tags">
                                     <span class="type">
@@ -96,7 +96,7 @@
                                 </div>
                             </td>
                         </tr>
-                    {% endfor %}
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

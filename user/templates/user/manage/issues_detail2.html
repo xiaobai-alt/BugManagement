@@ -1,0 +1,81 @@
+{% extends 'user/layout/manage_base.html' %}
+{% load static %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid clearfix" style="padding: 20px 0;">
+        <div class="col-sm-3">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fa fa-search" aria-hidden="true"></i> 筛选
+                </div>
+                <div class="panel-body">
+                    筛选选项
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <i class="fab fa-acquisitions-incorporated" aria-hidden="true"></i> 问题
+                </div>
+                <div class="panel-body">
+                    <a class="btn btn-success btn-sm" data-toggle="modal" data-target="#addModal">新建问题</a>
+                    <a class="btn btn-primary btn-sm">邀请成员</a>
+                </div>
+                <table class="table">
+                    <tbody class="issues-list">
+                    {% for item in issues_object_list %}
+                        <tr>
+                            <td class="number">
+                                <i class="fa fa-circle text-{{ item.priority }}"></i>
+                                <a target="_blank" href="{% url 'user:issues_detail' project_id=request.bug_management.project.id issues_id=item.id %}">{% string_just item.id %}</a>
+                            </td>
+                            <td class="issue">
+                                <div>
+                                    <a target="_blank" href="{% url 'user:issues_detail' project_id=request.bug_management.project.id issues_id=item.id %}">{{ item.subject }}</a>
+                                </div>
+                                <div class="tags">
+                                    <span class="type">
+                                        {{ item.issues_type.title }}
+                                    </span>
+                                    <span>
+                                        <i class="fa fa-refresh" aria-hidden="true"></i>
+                                        {{ item.get_status_display }}
+                                    </span>
+                                    <span>
+                                        <i class="fa fa-hand-o-right" aria-hidden="true"></i>
+                                        {{ item.assign.user_name }}
+                                    </span>
+                                    <span>
+                                        <i class="fas fa-user"></i>
+                                        {{ item.creator.user_name }}
+                                    </span>
+                                    <span><i class="fa fa-calendar" aria-hidden="true"></i> {{ item.end_date }} 截止 </span>
+                                    <span><i class="fa fa-clock-o" aria-hidden="true"></i> {{ item.latest_update_datetime }} 更新 </span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+            <nav aria-label="...">
+                <ul class="pagination" style="margin-top: 0;">
+                    {{ page_html | safe}}
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+
+{% endblock %}

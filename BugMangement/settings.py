@@ -70,7 +70,7 @@ TEMPLATES = [
             ],
             'libraries': {  # Adding this section should work around the issue.
                 'project_menu': 'user.templatetags.project_menu',
-                'issues': 'user.templatetags.issues'
+                'issues': 'user.templatetags.issues_tags',
             },
         },
     },

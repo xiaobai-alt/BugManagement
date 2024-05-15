@@ -192,3 +192,33 @@ class IssuesType(models.Model):
 
     def __str__(self):
         return self.title
+
+class IssuesReply(models.Model):
+    """ 问题回复"""
+
+    reply_type_choices = (
+        (1, '修改记录'),
+        (2, '回复')
+    )
+    reply_type = models.IntegerField(verbose_name='类型', choices=reply_type_choices)
+    issues = models.ForeignKey(verbose_name='问题', to='Issues', on_delete=models.CASCADE)
+    content = models.TextField(verbose_name='描述')
+    creator = models.ForeignKey(verbose_name='创建者', to='UserInfo', related_name='create_reply', on_delete=models.CASCADE)
+    create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    reply = models.ForeignKey(verbose_name='回复', to='self', null=True, blank=True, on_delete=models.CASCADE)
+
+class ProjectInvite(models.Model):
+    """ 项目邀请码 """
+    project = models.ForeignKey(verbose_name='项目', to='Project', on_delete=models.CASCADE)
+    code = models.CharField(verbose_name='邀请码', max_length=64, unique=True)
+    count = models.PositiveIntegerField(verbose_name='限制数量', null=True, blank=True, help_text='空表示无数量限制')
+    use_count = models.PositiveIntegerField(verbose_name='已邀请数量', default=0)
+    period_choices = (
+        (30, '30分钟'),
+        (60, '1小时'),
+        (300, '5小时'),
+        (1440, '24小时'),
+    )
+    period = models.IntegerField(verbose_name='有效期', choices=period_choices, default=1440)
+    create_datetime = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
+    creator = models.ForeignKey(verbose_name='创建者', to='UserInfo', related_name='create_invite', on_delete=models.CASCADE)

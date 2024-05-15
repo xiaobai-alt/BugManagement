@@ -56,3 +56,12 @@ class IssuesModelForm(BootStrapForm, forms.ModelForm):
         parent_list.extend(parent_object_list)
         self.fields['parent'].choices = parent_list
 
+class IssuesReplyModelForm(forms.ModelForm):
+    class Meta:
+        model = models.IssuesReply
+        fields = ['content', 'reply']
+
+class InviteModelForm(BootStrapForm, forms.ModelForm):
+    class Meta:
+        model = models.ProjectInvite
+        fields = ['period', 'count']
