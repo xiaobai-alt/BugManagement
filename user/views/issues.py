@@ -91,24 +91,54 @@ class SelectFilter(object):
 
 
 def issues(request, project_id):
-    if request.method == 'GET':
-        queryset = models.Issues.objects.filter(project_id=project_id)
+    if request.method == "GET":
+        # 根据URL做筛选，筛选条件（根据用户通过GET传过来的参数实现）
+        # ?status=1&status=2&issues_type=1
+        allow_filter_name = ['issues_type', 'status', 'priority']
+        condition = {}
+        for name in allow_filter_name:
+            value_list = request.GET.getlist(name)  # [1,2]
+            if not value_list:
+                continue
+            condition["{}__in".format(name)] = value_list
+        """
+        condition = {
+            "status__in":[1,2],
+            'issues_type':[1,]
+        }
+        """
 
+        # 分页获取数据
+        queryset = models.Issues.objects.filter(project_id=project_id).filter(**condition)
         page_object = Pagination(
             current_page=request.GET.get('page'),
             all_count=queryset.count(),
             base_url=request.path_info,
             query_params=request.GET,
-            per_page=1
+            per_page=50
         )
-
         issues_object_list = queryset[page_object.start:page_object.end]
-        form = IssuesModelForm(request=request)
-        # issues_object_list = models.Issues.objects.filter(project_id=project_id)
+
+        form = IssuesModelForm(request)
+        project_issues_type = models.IssuesType.objects.filter(project_id=project_id).values_list('id', 'title')
+
+        project_total_user = [(request.bug_management.project.creator_id, request.bug_management.project.creator.user_name,)]
+        join_user = models.ProjectUser.objects.filter(project_id=project_id).values_list('user_id', 'user__user_name')
+        project_total_user.extend(join_user)
+
+        invite_form = InviteModelForm()
         context = {
             'form': form,
+            'invite_form': invite_form,
             'issues_object_list': issues_object_list,
-            'page_html': page_object.page_html()
+            'page_html': page_object.page_html(),
+            'filter_list': [
+                {'title': "问题类型", 'filter': CheckFilter('issues_type', project_issues_type, request)},
+                {'title': "状态", 'filter': CheckFilter('status', models.Issues.status_choices, request)},
+                {'title': "优先级", 'filter': CheckFilter('priority', models.Issues.priority_choices, request)},
+                {'title': "指派者", 'filter': SelectFilter('assign', project_total_user, request)},
+                {'title': "关注者", 'filter': SelectFilter('attention', project_total_user, request)},
+            ]
         }
         return render(request, 'user/manage/issues.html', context)
 
@@ -324,7 +354,7 @@ def invite_url(request, project_id):
             form.add_error('period', "无权创建邀请码")
             return JsonResponse({'status': False, 'error': form.errors})
 
-        random_invite_code = uid(request.bug_management.user.mobile_phone)
+        random_invite_code = uid(request.bug_management.user.phone)
         form.instance.project = request.bug_management.project
         form.instance.code = random_invite_code
         form.instance.creator = request.bug_management.user
@@ -334,7 +364,7 @@ def invite_url(request, project_id):
         url = "{scheme}://{host}{path}".format(
             scheme=request.scheme,
             host=request.get_host(),
-            path=reverse('web:invite_join', kwargs={'code': random_invite_code})
+            path=reverse('user:invite_join', kwargs={'code': random_invite_code})
         )
 
         return JsonResponse({'status': True, 'data': url})

@@ -3,41 +3,35 @@
 {% block title %}用户主页{% endblock %}
 
 {% block content %}
-    <h1 style="color: #3e8f3e">Welcome</h1>
-    <div>
+    <div class="container">
+        <h1 class="text-center" style="color: #3e8f3e">Welcome</h1>
 
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Home</a>
-            </li>
-            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
-            </li>
-            <li role="presentation"><a href="#messages" aria-controls="messages" role="tab"
-                                       data-toggle="tab">Messages</a></li>
-            <li role="presentation"><a href="#settings" aria-controls="settings" role="tab"
-                                       data-toggle="tab">Settings</a></li>
-        </ul>
-
-        <!-- Tab panes -->
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="home">
-                {% for item in ProjectList %}
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><a href="{% url 'user:blog' project_id=item.id %}">{{ item.name }}</a></div>
-                        <div class="panel-body">
-                            {{ item.defs }}
+        {% for item in ProjectList %}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a href="{% url 'user:blog' project_id=item.id %}">{{ item.creator }} / {{ item.name }}</a>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <img src="{% static 'images/test.jpg' %}" alt="Project Image" class="img-responsive">
+                        </div>
+                        <div class="col-md-10">
+                            {% if item.defs %}
+                                {{ item.defs }}
+                            {% else %}
+                                <p>这是一个神秘的项目</p>
+                            {% endif %}
                         </div>
                     </div>
-                {% endfor %}
+                </div>
             </div>
-            <div role="tabpanel" class="tab-pane" id="profile">.jjjjjjjj</div>
-            <div role="tabpanel" class="tab-pane" id="messages">...</div>
-            <div role="tabpanel" class="tab-pane" id="settings">...</div>
-        </div>
-
+        {% empty %}
+            <p>No projects found.</p>
+        {% endfor %}
     </div>
 {% endblock %}
+
 {% block js %}
     <script src="{% static 'js/backdrop.js' %}"></script>
 {% endblock %}
-

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from .views import account, home, manage, wiki, file, issues
+from .views import account, home, manage, wiki, file, issues, dashboard, statistics
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
@@ -40,9 +40,10 @@ urlpatterns = [
     path('settings/change_pwd/', manage.change_pwd, name='change_pwd'),
 
     re_path(r'^manage_project/(?P<project_id>\d+)/', include([
-        re_path('dashboard/$', manage.dashboard, name='dashboard'),
-        re_path('statistics/$', manage.statistics, name='statistics'),
 
+        re_path('statistics/$', manage.statistics, name='statistics'),
+        re_path(r'^statistics/priority/$', statistics.statistics_priority, name='statistics_priority'),
+        re_path(r'^statistics/project/user/$', statistics.statistics_project_user, name='statistics_project_user'),
 
 
         re_path('file/$', file.file, name='file'),
@@ -65,7 +66,10 @@ urlpatterns = [
         re_path(r'^issues/record/(?P<issues_id>\d+)/$', issues.issues_record, name='issues_record'),
         re_path(r'^issues/change/(?P<issues_id>\d+)/$', issues.issues_change, name='issues_change'),
         re_path(r'^issues/invite/url/$', issues.invite_url, name='invite_url'),
+
+        re_path('dashboard/$', dashboard.dashboard, name='dashboard'),
+        re_path(r'^dashboard/issues/chart/$', dashboard.issues_chart, name='issues_chart'),
     ], None
-    ))
+    )), re_path(r'^invite/join/(?P<code>\w+)/$', issues.invite_join, name='invite_join')
 
 ]

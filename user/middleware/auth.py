@@ -52,13 +52,14 @@ class AuthMiddleware(MiddlewareMixin):
 
         # 首先判断项目是否为登陆者所有，创建or参与
         project_object = models.Project.objects.filter(creator=request.bug_management.user, id=project_id).first()
+        project_join_object = models.ProjectUser.objects.filter(user=request.bug_management.user,
+                                                                project_id=project_id).first()
         if project_object:
             # 如果为登陆者所有，就可以通过
             request.bug_management.project = project_object
             return
-        project_join_object = models.ProjectUser.objects.filter(user=request.bug_management.user, project_id=project_id).first()
-        if project_join_object:
-            request.bug_management.project = project_object
+        elif project_join_object:
+            request.bug_management.project = project_join_object
             return
 
         return redirect(reverse('user:management'))
